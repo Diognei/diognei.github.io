@@ -4,21 +4,54 @@
   <meta charset="UTF-8">
   <title>Diognei</title>
   <style>
+    /* Hide tab content by default */
+    .tab-content {
+      display: none;
+      margin-top: 20px;
+    }
+    .tab-content.active {
+      display: block;
+    }
     body {
       text-align: center;
       font-family: Arial, sans-serif;
       margin: 20px;
     }
-    iframe {
-      max-width: 100%;
-      height: auto;
+
+    /* Navigation tabs */
+    .tabs {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+      list-style: none;
+      padding: 0;
     }
+
+    .tabs li {
+      margin: 0 10px;
+    }
+
+    .tabs a {
+      text-decoration: none;
+      padding: 10px 20px;
+      background-color: #1a73e8;
+      color: white;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+
+    .tabs a:hover {
+      background-color: #155bb5;
+    }
+
     a {
       display: inline-block;
       margin: 10px 0;
       text-decoration: none;
       color: #1a0dab;
     }
+
     a:hover {
       text-decoration: underline;
     }
@@ -26,31 +59,47 @@
 </head>
 <body>
   <h1>Diognei's official homepage</h1>
+  <h1 style="color: red;">Webpage under construction</h1>
 
-  <!-- YouTube section -->
-  <p>
-    <a href="https://youtube.com/@Diognei" target="_blank">
-      My YouTube Channel
-    </a>
-  </p>
+  <!-- Navigation Tabs -->
+  <ul class="tabs">
+    <li><a href="#music" onclick="showTab('music'); return false;">Music</a></li>
+    <li><a href="#animation" onclick="showTab('animation'); return false;">Animation</a></li>
+    <li><a href="#game" onclick="showTab('game'); return false;">Game</a></li>
+    <li><a href="#software" onclick="showTab('software'); return false;">Software</a></li>
+    <li><a href="#hardware" onclick="showTab('hardware'); return false;">Hardware</a></li>
+    <li><a href="#research" onclick="showTab('research'); return false;">Research</a></li>
+    <li><a href="#other" onclick="showTab('other'); return false;">Other</a></li>
+  </ul>
 
-  <!-- ResearchGate section -->
-  <p>
-    <a href="https://www.researchgate.net/profile/Diognei-Matos?ev=hdr_xprf" target="_blank">
-      My Research Profile
-    </a>
-  </p>
+  <!-- Other section -->
+  <div id="other" class="tab-content">
+    <h2>Other</h2>
+    <p>
+      <a href="https://youtube.com/@Diognei" target="_blank">
+        My YouTube Channel
+      </a>
+    </p>
+    <p>
+      <a href="https://www.researchgate.net/profile/Diognei-Matos?ev=hdr_xprf" target="_blank">
+        My Research Profile
+      </a>
+    </p>
+  </div>
 
-  <!-- Embedded YouTube video -->
-  <h2>Featured Video</h2>
-  <iframe 
-      width="560" 
-      height="315" 
-      src="https://www.youtube.com/embed/U_nW7N2g5Xg?list=PLZeMO53DBEult3AcbK8_xiOOkrTms-xdc" 
-      title="YouTube video player" 
-      frameborder="0" 
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-      allowfullscreen>
-  </iframe>
+  <script>
+    function showTab(tabId) {
+      // Hide all tab contents
+      var contents = document.querySelectorAll('.tab-content');
+      contents.forEach(function(content) {
+        content.classList.remove('active');
+      });
+      // Show selected tab content if exists
+      var selected = document.getElementById(tabId);
+      if (selected) {
+        selected.classList.add('active');
+      }
+    }
+  </script>
 </body>
 </html>

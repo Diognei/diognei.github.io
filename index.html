@@ -9,10 +9,6 @@
       font-family: Arial, sans-serif;
       margin: 20px;
     }
-    iframe {
-      max-width: 100%;
-      height: auto;
-    }
     a {
       display: inline-block;
       margin: 10px 0;
@@ -22,6 +18,22 @@
     a:hover {
       text-decoration: underline;
     }
+
+    /* Responsive video container */
+    .video-container {
+      position: relative;
+      width: 100%;
+      max-width: 560px; /* optional maximum width */
+      padding-bottom: 56.25%; /* 16:9 aspect ratio */
+      margin: 20px auto; /* center */
+    }
+    .video-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
   </style>
 </head>
 <body>
@@ -30,27 +42,27 @@
   <!-- YouTube section -->
   <p>
     <a href="https://youtube.com/@Diognei" target="_blank">
-      My YouTube Channel
+      https://youtube.com/@Diognei
     </a>
   </p>
 
   <!-- ResearchGate section -->
   <p>
     <a href="https://www.researchgate.net/profile/Diognei-Matos?ev=hdr_xprf" target="_blank">
-      My Research Profile
+      https://www.researchgate.net/profile/Diognei-Matos?ev=hdr_xprf
     </a>
   </p>
 
   <!-- Embedded YouTube video -->
-  <h2>Test Video</h2>
-  <iframe 
-      width="560" 
-      height="315" 
-      src="https://www.youtube.com/embed/U_nW7N2g5Xg?list=PLZeMO53DBEult3AcbK8_xiOOkrTms-xdc" 
-      title="YouTube video player" 
-      frameborder="0" 
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-      allowfullscreen>
-  </iframe>
+  <h2>Featured Video</h2>
+  <div class="video-container">
+    <iframe 
+        src="https://www.youtube.com/embed/U_nW7N2g5Xg?list=PLZeMO53DBEult3AcbK8_xiOOkrTms-xdc" 
+        title="YouTube video player" 
+        frameborder="0" 
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+        allowfullscreen>
+    </iframe>
+  </div>
 </body>
 </html>

@@ -72,34 +72,45 @@
     <li><a href="#other" onclick="showTab('other'); return false;">Other</a></li>
   </ul>
 
-  <!-- Other section -->
-  <div id="other" class="tab-content">
-    <h2>Other</h2>
-    <p>
-      <a href="https://youtube.com/@Diognei" target="_blank">
-        My YouTube Channel
-      </a>
-    </p>
-    <p>
-      <a href="https://www.researchgate.net/profile/Diognei-Matos?ev=hdr_xprf" target="_blank">
-        My Research Profile
-      </a>
-    </p>
-  </div>
+  <!-- Tab content will be loaded here -->
+  <div id="tab-contents"></div>
 
   <script>
+    let currentTabId = null;
     function showTab(tabId) {
-      // Hide all tab contents
-      var contents = document.querySelectorAll('.tab-content');
-      contents.forEach(function(content) {
-        content.classList.remove('active');
-      });
-      // Show selected tab content if exists
-      var selected = document.getElementById(tabId);
-      if (selected) {
-        selected.classList.add('active');
+      currentTabId = tabId;
+      // Map tabId to file name
+      const fileMap = {
+        'other': 'other.html',
+        // Add other tabs here: 'music': 'music.html', etc.
+      };
+      const tabContents = document.getElementById('tab-contents');
+      tabContents.innerHTML = '';
+      if (fileMap[tabId]) {
+        fetch(fileMap[tabId])
+          .then(response => {
+            if (!response.ok) throw new Error('HTTP ' + response.status);
+            return response.text();
+          })
+          .then(html => {
+            // Avoid race conditions if user clicked another tab meanwhile
+            if (currentTabId !== tabId) return;
+            tabContents.innerHTML = html;
+            // Ensure loaded content gets the active class
+            const firstContent = tabContents.querySelector('.tab-content');
+            if (firstContent) firstContent.classList.add('active');
+          })
+          .catch(err => {
+            tabContents.innerHTML = '<div class="tab-content active"><p>Failed to load content (' + fileMap[tabId] + '): ' + err.message + '</p></div>';
+          });
+      } else {
+        tabContents.innerHTML = '<div class="tab-content active"><h2>' + tabId.charAt(0).toUpperCase() + tabId.slice(1) + '</h2><p>Content coming soon.</p></div>';
       }
     }
+    // Optionally show default tab on load
+    document.addEventListener('DOMContentLoaded', function() {
+      showTab('other');
+    });
   </script>
 </body>
 </html>

@@ -12,11 +12,34 @@
     .tab-content.active {
       display: block;
     }
+    /* Uniform spacing inside tab contents */
+    .tab-content h2 {
+      margin: 0 0 14px;
+    }
+    .tab-content h1 {
+      margin: 0 0 14px;
+    }
+    .tab-content p {
+      margin: 0 0 14px;
+    }
+    /* Melhorar quebra de linhas e palavras longas dentro do conteúdo */
+    .tab-content,
+    .tab-content p,
+    .tab-content a {
+      overflow-wrap: anywhere; /* faz URLs e palavras longas quebrarem */
+      word-break: break-word;  /* fallback para navegadores antigos */
+      white-space: normal;     /* garante quebra de linha normal */
+    }
+    /* Remove extra vertical margins on links so spacing relies on paragraph margins */
+    .tab-content a {
+      margin: 0;
+    }
     body {
       text-align: center;
       font-family: Arial, sans-serif;
       margin: 20px;
-      background: #000;
+      /* Background image will be applied via JS with cache-busting */
+      background-color: #000;
       color: #eee;
     }
 
@@ -38,18 +61,40 @@
       text-decoration: none;
       padding: 10px 20px;
       background-color: #1a73e8;
-      color: #fff;
+      color: #fff !important; /* ensure tab text stays visible */
       border-radius: 5px;
       transition: background-color 0.3s, transform 0.1s;
+      display: inline-block;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
     }
 
     .tabs a:hover {
       background-color: #155bb5;
     }
+    /* Donate tab highlighted in red */
+    .tabs a.donate {
+      background-color: #e53935;
+    }
+    .tabs a.donate:hover {
+      background-color: #c62828;
+    }
+    /* Simple button style for calls to action inside content */
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #1a73e8;
+      color: #fff;
+      border-radius: 5px;
+      text-decoration: none;
+      transition: background-color 0.3s, transform 0.1s;
+    }
+    .btn:hover {
+      background-color: #155bb5;
+    }
 
     a {
       display: inline-block;
-      margin: 10px 0;
+      /* Global link margins removed to avoid spacing inconsistencies inside tab content */
       text-decoration: none;
       color: #4da3ff;
     }
@@ -58,21 +103,41 @@
       text-decoration: underline;
       color: #82c2ff;
     }
+    /* Shown only when opened via file:// to guide local testing */
+    .warning-banner {
+      background: #ffd54f;
+      color: #000;
+      padding: 10px 12px;
+      border-radius: 6px;
+      margin: 10px auto 16px;
+      width: fit-content;
+      max-width: 90%;
+      line-height: 1.3;
+    }
+    /* Title spacing: remove gap between the two lines, add space below second */
+    .site-title-main { margin: 0; }
+    .site-title-sub {
+      margin: 0 0 20px; /* space below Official Homepage */
+      font-size: 20px;
+      font-weight: normal;
+    }
   </style>
 </head>
 <body>
-  <h1>Diognei's official homepage</h1>
-  <h1 style="color: red;">Webpage under construction</h1>
+  <h1 class="site-title-main">Diognei Matos</h1>
+  <h2 class="site-title-sub">Official Homepage</h2>
 
   <!-- Navigation Tabs -->
   <ul class="tabs">
+    <li><a href="#home" onclick="showTab('home'); return false;">Home</a></li>
     <li><a href="#music" onclick="showTab('music'); return false;">Music</a></li>
-    <li><a href="#animation" onclick="showTab('animation'); return false;">Animation</a></li>
+    <li><a href="#cartoon" onclick="showTab('cartoon'); return false;">Cartoon</a></li>
     <li><a href="#game" onclick="showTab('game'); return false;">Game</a></li>
-    <li><a href="#software" onclick="showTab('software'); return false;">Software</a></li>
-    <li><a href="#hardware" onclick="showTab('hardware'); return false;">Hardware</a></li>
-    <li><a href="#research" onclick="showTab('research'); return false;">Research</a></li>
+    <li><a href="#academic" onclick="showTab('academic'); return false;">Academic</a></li>
     <li><a href="#other" onclick="showTab('other'); return false;">Other</a></li>
+    <!--
+    <li><a href="#donate" class="donate" onclick="showTab('donate'); return false;">Donate</a></li>
+    -->
   </ul>
 
   <!-- Tab content will be loaded here -->
@@ -80,17 +145,30 @@
 
   <script>
     let currentTabId = null;
+    // Simple cache-busting: in local dev, always fetch fresh; in production, you can bump SITE_VERSION
+    const SITE_VERSION = 'v1';
+    const CACHE_BUST_PARAM = (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
+      ? ('cb=' + Date.now())
+      : ('v=' + SITE_VERSION);
     function showTab(tabId) {
       currentTabId = tabId;
       // Map tabId to file name
       const fileMap = {
-        'other': 'other.html',
-        // Add other tabs here: 'music': 'music.html', etc.
+        'home': 'pages/home.html',
+        'music': 'pages/music.html',
+        'cartoon': 'pages/cartoon.html',
+        'game': 'pages/game.html',
+        'academic': 'pages/academic.html',
+        'other': 'pages/other.html',
+        'donate': 'pages/donate.html',
+        'pixbr': 'pages/pixbr.html'
       };
       const tabContents = document.getElementById('tab-contents');
       tabContents.innerHTML = '';
       if (fileMap[tabId]) {
-        fetch(fileMap[tabId])
+        const base = fileMap[tabId];
+        const url = base + (base.includes('?') ? '&' : '?') + CACHE_BUST_PARAM;
+        fetch(url, { cache: 'no-store' })
           .then(response => {
             if (!response.ok) throw new Error('HTTP ' + response.status);
             return response.text();
@@ -112,7 +190,22 @@
     }
     // Optionally show default tab on load
     document.addEventListener('DOMContentLoaded', function() {
-      showTab('other');
+      // Dynamically set background image with cache-busting so updates show immediately
+      const BACKGROUND_IMG = 'assets/back2.png';
+      const bgUrl = BACKGROUND_IMG + (BACKGROUND_IMG.includes('?') ? '&' : '?') + CACHE_BUST_PARAM;
+      document.body.style.backgroundImage = 'url(' + bgUrl + ')';
+      document.body.style.backgroundRepeat = 'no-repeat';
+      document.body.style.backgroundPosition = 'center center';
+      document.body.style.backgroundAttachment = 'fixed';
+      document.body.style.backgroundSize = 'cover';
+      // If opened directly from disk, show a helpful banner
+      if (location.protocol === 'file:') {
+        const banner = document.createElement('div');
+        banner.className = 'warning-banner';
+        banner.innerHTML = 'You are viewing this page directly from your disk (file://). Browser security blocks loading tab files this way. Please run a local server, e.g.: <code>python3 -m http.server 8000</code> and open <a href="http://localhost:8000/index.html">http://localhost:8000/index.html</a>.';
+        document.body.insertBefore(banner, document.body.firstChild);
+      }
+      showTab('home');
     });
   </script>
 </body>
